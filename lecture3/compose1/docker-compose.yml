@@ -1,0 +1,38 @@
+version: "3.7"
+
+volumes:
+  db_vol: # используем дефолтовое поведение
+
+services:
+
+  cb:
+    image: cb:mysql
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        tag: "3.8"
+    ports:
+      - "8091:5000"
+    environment:
+      DATABASE_URL: "mysql+mysqldb://cbuser:cbpass@db:3306/cbdb"
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: mariadb:10.4
+    volumes:
+      - db_vol:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "my_secret"
+      MYSQL_USER: "cbuser"
+      MYSQL_PASSWORD: "cbpass"
+      MYSQL_DATABASE: "cbdb"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8092:80"
+    environment:
+      - PMA_HOST=db
