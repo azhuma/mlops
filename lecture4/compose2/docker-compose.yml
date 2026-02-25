@@ -1,0 +1,64 @@
+volumes:
+  db_vol:
+
+networks:
+  frontend:
+  backend:
+
+services:
+
+  db:
+    image: postgres:12
+    volumes:
+      - db_vol:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "bkuser"
+      POSTGRES_PASSWORD: "bkpass"
+      POSTGRES_DB: "bookmarks"
+    networks:
+      - backend
+    command: postgres -c log_destination=stderr -c log_statement=all
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8093:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@example.com"
+      PGADMIN_DEFAULT_PASSWORD: "my_secret"
+    networks:
+      - backend
+
+  app1:
+    image: mydjango:psql
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - frontend
+      - backend
+    restart: always
+
+  app2:
+    image: mydjango:psql
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - frontend
+      - backend
+    restart: always
+
+  proxy:
+    image: nginx:stable
+    volumes:
+      - ./bookmarks_nginx.conf:/etc/nginx/conf.d/bookmarks_nginx.conf
+    ports:
+      - "8000:8000"
+    networks:
+      - frontend
+    depends_on:
+      - app1
+      - app2
+    restart: always
