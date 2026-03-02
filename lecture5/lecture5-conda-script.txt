@@ -1,0 +1,52 @@
+# рассмотрим как паковать приложение
+# простой пример
+
+hello-world
+└── hello_world
+    ├── __init__.py
+    └── main.py
+
+
+# создаем виртуальное окружение
+conda create -n hellodemo python=3.10
+
+# активируем его
+conda activate hellodemo
+
+# устанавливаем инструменты для создания пакетов и загрузки
+pip install setuptools twine
+
+# создаем дистрибутив
+python setup.py sdist
+
+# устанавливаем дистрибутив
+pip install dist/hello_world_my_package-0.0.1.tar.gz
+
+# можем вызывать библиотеку
+python
+from hello_world import add
+add(3,4)
+exit()
+
+# PyPI
+# регимся на https://test.pypi.org
+# немного возни со всякими аутентификациями
+# и надо будет сохранить токен
+
+# загружаем нашу либу в PyPI
+twine upload --repository-url https://test.pypi.org/legacy/ dist/hello_world_my_package-0.0.1.tar.gz
+
+# если все норм то будет доступно здесь
+# https://test.pypi.org/project/hello-world-my-package/0.0.1/
+# что означает что мы можем его потом устанавливать следующим образом
+pip install -i https://test.pypi.org/simple/ hello-world-my-package==0.0.1
+
+
+# пример посложнее
+# /packaging-ml-model
+
+# порядок рассмотрения файлов
+- /processing/data_handling.py - датасеты
+- pipeline.py - пайплайн
+- /processing/preprocessing.py - функции для пайплайна
+
