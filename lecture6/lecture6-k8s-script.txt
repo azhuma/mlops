@@ -1,0 +1,44 @@
+# установать k8s
+# самый простой вариант - активировать в docker desktop
+# для данного занятия покажу через rancher desktop
+
+# работа через командную строку
+# проверяем текущий контекст
+# клиент может взаимодействовать с несколькими кластерами (контекст)
+kubectl config current-context
+
+# помощь также как и в докере
+# работает tab-tab
+kubectl run --help
+
+# простые команды
+# поднимаем обычный контейнер
+kubectl run my-nginx --image=nginx
+
+# проверяем статус
+kubectl get pods
+
+# применяем инстркукции из файла
+kubectl apply -f simple-pod.yaml
+
+# удаляем ресурсы
+kubectl delete pod my-nginx
+kubectl delete -f simple-pod.yaml 
+
+
+# также пример стримлита
+conda activate base
+
+# установим библиотеку
+pip install streamlit
+
+# демо
+streamlit hello
+
+# демо с мл моделью
+conda create -n streamlit-env python=3.10
+conda activate streamlit-env
+pip install -r requirements.txt
+streamlit run streamlit-ml-app.py
+
+
